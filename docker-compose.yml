@@ -46,6 +46,8 @@ services:
       WORDPRESS_DB_PASSWORD: '${MYSQL_PASSWORD}'
     volumes:
       - ./:/opt/lampp/htdocs
+    networks:
+      - wordpress-network
 
 volumes:
   db-data:
