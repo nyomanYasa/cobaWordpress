@@ -14,7 +14,7 @@ services:
       MYSQL_USER: '${MYSQL_USER}'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
     volumes:
-      - db-data:/opt/lampp/mysql
+      - db-data:/opt/lampp/bin/mariadb
     networks:
       - wordpress-network
 
@@ -54,4 +54,4 @@ volumes:
 
 networks:
   wordpress-network:
-  driver: bridge
+    driver: bridge
