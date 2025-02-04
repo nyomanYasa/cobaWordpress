@@ -1,8 +1,23 @@
-version: "4.37.1"
-
 services:
+  nginx:
+    container_name: ${CONTAINER_NAME}-nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOSTNAME: ${HOSTNAME}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      #- ./nginx:/etc/nginx/conf.d:rw
+      - wordpress:/var/www/html
+    networks:
+      - internal
   database:
-    mem_limit: 2048m
+    mem_limit: 1048m
     image: mariadb:10.6.4-focal
     restart: unless-stopped
     ports:
@@ -16,7 +31,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     networks:
-      - wordpress-network
+      - internal
 
   phpmyadmin:
     depends_on:
@@ -30,7 +45,7 @@ services:
       PMA_HOST: database
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
     networks:
-      - wordpress-network
+      - internal
   wordpress:
     depends_on:
       - database
@@ -48,11 +63,12 @@ services:
       - ./src/plugins/:/var/www/html/wp-content/plugins
       - ./src/themes/:/var/www/html/wp-content/themes
     networks:
-      - wordpress-network
+      - internal
 
 volumes:
   db-data:
+  wordpress:
 
 networks:
-  wordpress-network:
+  internal:
     driver: bridge
